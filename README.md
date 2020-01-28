@@ -1,2 +1,2 @@
 # r-collab
-Collaborating withpartner2
+Collaborating with partner2
