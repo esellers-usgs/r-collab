@@ -1,4 +1,5 @@
 # r-collab
 Collaborating with partner2
 
-I am collaboratively creating a line 4 conflict!
+currently working on line 4, going to inevitably cause a merge conflict
+
