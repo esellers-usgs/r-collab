@@ -14,6 +14,7 @@ library(here)
 library(janitor)
 library(paletteer)
 ```
+![](https://octodex.github.com/images/labtocat.png)
 
 Read in noaa_landings.csv data (fixing the 'no data' values to proper NAs)
 ```{r read data}
