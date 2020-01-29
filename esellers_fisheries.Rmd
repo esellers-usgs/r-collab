@@ -7,5 +7,74 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+
+# attach libraries
+library(tidyverse)
+library(here)
+library(janitor)
+library(paletteer)
 ```
+
+Read in noaa_landings.csv data (fixing the 'no data' values to proper NAs)
+```{r read data}
+us_landings <- read_csv(here("data/noaa_landings.csv"), 
+                        na = "no data")
+```
+
+Clean up the dataset
+- clean the field labels and in the newly labeled afs_name field convert values to lowercase
+```{r clean the dataset}
+salmon_clean <- us_landings %>% 
+  clean_names() %>% 
+  mutate(afs_name = str_to_lower(afs_name)) %>% 
+  mutate(dollars_num = parse_number(dollars_usd)) %>% 
+  filter(str_detect(afs_name, pattern = "salmon")) %>% 
+  separate(afs_name, into = c("salmon_group", "subgroup"), sep = ", ") %>% 
+  drop_na(dollars_num)
+```
+
+sep - ", " captures the space along with the separator so that the space does not get copied over
+NOTE: drop_na(dollars_num) deletes the entire row where dollars_num is NA
+
+### Use a pivot table to create an Annual total value by salmon group
+
+```{r}
+salmon_us_annual <- salmon_clean %>% 
+  group_by(year, subgroup) %>% 
+  summarize(
+    tot_value = sum(dollars_num, na.rm = TRUE)
+  )
+```
+
+Activity: Create a line graph from salmon_us_annual with year on the x axis and tot_value on the y axis, that has a diff line for each subgroup
+
+```{r create a line graph}
+ggplot(data = salmon_us_annual, aes(x = year, y = tot_value, 
+                                    group = subgroup)) + 
+  geom_line(aes(color = subgroup)) + 
+  theme_bw() +
+  labs(x = "Year", 
+       y = "US commercial salmon value (USD)", 
+       title = "my awesome graph") + 
+  scale_color_paletteer_d("ggsci::uniform_startrek")
+
+# scale_color_paletteer_d for 'discrete'
+# ggsci	uniform_startrek
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
